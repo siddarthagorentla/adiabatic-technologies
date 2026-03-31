@@ -3,8 +3,6 @@ import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { CartProvider } from "@/context/CartContext";
-import CartDrawer from "@/components/cart/CartDrawer";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
@@ -25,23 +23,25 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Adiabatic Technologies — India's 1st Battery Pack with 10x Lower Degradation",
+  title: "Adiabatic Technologies — Industrial Battery Packs for Robotics, Defence, Marine & MHE",
   description:
-    "Adiabatic Technologies builds high-performance lithium-ion battery packs for EVs, drones, agriculture, and energy storage. India's 1st battery pack with 10x lower life degradation. IIT Hyderabad incubated.",
+    "Adiabatic Technologies designs and manufactures high-performance lithium battery packs for industrial applications — MHE, Robotics, Defence, Marine, Power Tools, Drones, EV, BESS, and more. Built in India.",
   keywords: [
-    "lithium-ion battery",
-    "EV battery India",
-    "battery pack manufacturer",
-    "electric vehicle battery",
-    "energy storage",
-    "BESS",
+    "industrial battery pack India",
+    "MHE forklift battery",
+    "robotics battery pack",
+    "defence battery",
+    "marine lithium battery",
+    "AMR AGV battery",
+    "BESS energy storage",
     "drone battery",
-    "agriculture battery",
+    "LFP NMC battery manufacturer",
     "Adiabatic Technologies",
+    "IIT Hyderabad battery startup",
   ],
   openGraph: {
-    title: "Adiabatic Technologies — 10x Lower Degradation Battery Packs",
-    description: "India's 1st lithium-ion battery pack with 10x lower life degradation. Powering EVs, drones, agriculture, and energy storage.",
+    title: "Adiabatic Technologies — Industrial Battery Systems",
+    description: "High-performance lithium battery packs for industrial electrification — Robotics, MHE, Defence, Marine, BESS, and more.",
     type: "website",
     url: "https://www.adiabatic.co.in",
     siteName: "Adiabatic Technologies",
@@ -51,22 +51,21 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Adiabatic Technologies",
-  "url": "https://www.adiabatic.co.in",
-  "logo": "https://www.adiabatic.co.in/logo.png",
-  "contactPoint": {
+  name: "Adiabatic Technologies Pvt. Ltd.",
+  url: "https://www.adiabatic.co.in",
+  logo: "https://www.adiabatic.co.in/logo.png",
+  contactPoint: {
     "@type": "ContactPoint",
-    "telephone": "+91-9521611518",
-    "contactType": "customer service",
-    "areaServed": "IN",
-    "availableLanguage": "en"
+    telephone: "+91-9521611518",
+    contactType: "sales",
+    areaServed: "IN",
+    availableLanguage: "en",
   },
-  "sameAs": [
+  sameAs: [
     "https://www.linkedin.com/company/85656436/adiabatic",
     "https://twitter.com/Adiabatic_IN",
-    "https://www.instagram.com/adiabatic.technologies?igshid=OGQ5ZDc2ODk2ZA%3D%3D",
-    "https://www.youtube.com/channel/UCX8MWMNTcEB39wrA_zdJ-hQ"
-  ]
+    "https://www.instagram.com/adiabatic.technologies",
+  ],
 };
 
 export default function RootLayout({
@@ -83,12 +82,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );

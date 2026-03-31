@@ -1,70 +1,64 @@
 export default function ManufacturingSection() {
-    const capabilities = [
-        { title: "Cell-Level Assembly", desc: "Precision cell sorting & module assembly" },
-        { title: "Automated Welding", desc: "Spot welding with quality assurance" },
-        { title: "BMS Integration", desc: "In-house BMS design & programming" },
-        { title: "End-of-Line Testing", desc: "100% QC with cycle testing" },
-    ];
+  return (
+    <section className="py-24 bg-primary-darker">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left */}
+          <div>
+            <p className="text-xs text-primary-green font-mono uppercase tracking-widest mb-3">Manufacturing Excellence</p>
+            <h2 className="text-4xl font-heading font-bold text-white mb-6">
+              End-to-End in India,<br />
+              <span className="text-gradient">Under One Roof</span>
+            </h2>
+            <p className="text-neutral-400 leading-relaxed mb-8">
+              Our MIDC Ahmednagar facility houses all critical manufacturing processes — from cell incoming QC and grading to automated pack assembly, BMS flashing, and functional testing — ensuring traceability and quality control at every step.
+            </p>
 
-    return (
-        <section className="relative py-24 bg-primary-darker overflow-hidden">
-            <div className="absolute inset-0 bg-grid opacity-30" />
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-green/20 to-transparent" />
-
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    {/* Image */}
-                    <div className="relative rounded-2xl overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/80 via-transparent to-transparent z-10" />
-                        <img
-                            src="/factory.png"
-                            alt="Adiabatic Technologies manufacturing facility at MIDC Ahmednagar"
-                            className="w-full h-80 lg:h-[450px] object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700"
-                        />
-                        <div className="absolute bottom-6 left-6 z-20">
-                            <div className="glass px-4 py-2 rounded-lg">
-                                <p className="text-sm font-heading font-semibold text-white">MIDC Ahmednagar, Maharashtra</p>
-                                <p className="text-xs text-neutral-400">Dedicated Manufacturing Facility</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Content */}
-                    <div>
-                        <span className="text-primary-green text-sm font-medium uppercase tracking-widest">
-                            Manufacturing
-                        </span>
-                        <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-3 mb-4">
-                            Engineered in India.{" "}
-                            <span className="text-gradient">Built for the World.</span>
-                        </h2>
-                        <p className="text-neutral-400 leading-relaxed mb-8">
-                            Our state-of-the-art manufacturing facility at MIDC Ahmednagar houses complete
-                            battery pack assembly lines — from cell sorting to final quality testing. Every
-                            pack undergoes rigorous 100% end-of-line testing before shipping.
-                        </p>
-
-                        <div className="grid grid-cols-2 gap-4 mb-8">
-                            {capabilities.map((cap) => (
-                                <div key={cap.title} className="glass rounded-xl p-4 hover:border-primary-green/20 transition-all">
-                                    <h4 className="text-sm font-heading font-semibold text-white mb-1">{cap.title}</h4>
-                                    <p className="text-xs text-neutral-500">{cap.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <a
-                            href="/contact"
-                            className="inline-flex items-center gap-2 text-primary-green hover:text-white text-sm font-medium transition-colors"
-                        >
-                            Schedule a Factory Visit
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                        </a>
-                    </div>
+            <div className="space-y-4 mb-8">
+              {[
+                { step: "01", title: "Cell Incoming QC & Grading", desc: "100% cell capacity-matching and IR testing before assembly" },
+                { step: "02", title: "Pack Assembly & Welding", desc: "Automated nickel-strip laser welding for consistent cell interconnects" },
+                { step: "03", title: "BMS Integration & Flashing", desc: "Application-specific firmware loaded and calibrated per pack" },
+                { step: "04", title: "Functional Testing & Certification", desc: "Full charge-discharge cycle, thermal profile, and protocol comms test" },
+              ].map((item) => (
+                <div key={item.step} className="flex gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-primary-green/10 text-primary-green text-xs font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    {item.step}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-white mb-1">{item.title}</h4>
+                    <p className="text-xs text-neutral-400">{item.desc}</p>
+                  </div>
                 </div>
+              ))}
             </div>
-        </section>
-    );
+
+            <div className="flex flex-wrap gap-3">
+              {["MIDC Ahmednagar", "IEC 62619", "UN 38.3", "AIS 156 (In Progress)"].map((cert) => (
+                <span key={cert} className="text-xs bg-white/5 border border-white/10 text-neutral-300 px-3 py-1.5 rounded-lg font-mono">
+                  {cert}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — Visual */}
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { value: "100%", label: "Cell QC Traceability", icon: "🔍" },
+              { value: "IP67", label: "Peak Ingress Protection", icon: "💧" },
+              { value: "3", label: "Battery Chemistries", icon: "⚗️" },
+              { value: "12+", label: "Industrial Segments", icon: "🏭" },
+            ].map((metric) => (
+              <div key={metric.label} className="glass rounded-2xl p-6 text-center hover:glow-green transition-all duration-300">
+                <div className="text-2xl mb-2">{metric.icon}</div>
+                <div className="text-3xl font-heading font-bold text-primary-green mb-1">{metric.value}</div>
+                <div className="text-xs text-neutral-400 uppercase tracking-wider leading-tight">{metric.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

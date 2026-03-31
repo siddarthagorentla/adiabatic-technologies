@@ -1,165 +1,196 @@
 import { notFound } from "next/navigation";
-import { allProducts } from "@/data/products";
-import type { Metadata } from "next";
 import Link from "next/link";
+import { productCategories, getCategoryBySlug } from "@/data/products";
 
-interface Props {
-    params: { slug: string };
+export async function generateStaticParams() {
+  return productCategories.map((cat) => ({ slug: cat.slug }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const product = allProducts.find((p) => p.slug === params.slug);
-    if (!product) return { title: "Product Not Found" };
-
-    return {
-        title: `${product.name} — Adiabatic Technologies`,
-        description: product.description,
-    };
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const cat = getCategoryBySlug(slug);
+  if (!cat) return { title: "Not Found" };
+  return {
+    title: `${cat.name} Battery Packs — Adiabatic Technologies`,
+    description: cat.description,
+  };
 }
 
-export default function ProductDetailPage({ params }: Props) {
-    const product = allProducts.find((p) => p.slug === params.slug);
+const categoryIconMap: Record<string, string> = {
+  mhe: "🏭", robotics: "🤖", defence: "🛡️", marine: "⚓",
+  "power-tools": "🔧", drones: "🚁", ev: "⚡",
+  "consumer-electronics": "📱", "bess-residential": "🏠",
+  "bess-grid": "🔌", "solar-street-light": "💡", "agri-repurposed": "🌱",
+};
 
-    if (!product) {
-        notFound();
-    }
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const cat = getCategoryBySlug(slug);
+  if (!cat) notFound();
 
-    // Schema.org JSON-LD
-    const jsonLd = {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        name: product.name,
-        image: [`https://www.adiabatic.co.in${product.image}`],
-        description: product.description,
-        brand: {
-            "@type": "Brand",
-            name: "Adiabatic Technologies",
-        },
-        offers: {
-            "@type": "Offer",
-            url: `https://www.adiabatic.co.in/products/${product.slug}`,
-            priceCurrency: "INR",
-            price: product.salePrice,
-            itemCondition: "https://schema.org/NewCondition",
-            availability: "https://schema.org/InStock",
-        },
-    };
+  const icon = categoryIconMap[cat.slug] || "🔋";
 
-    return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
-            <div className="min-h-screen pt-32 pb-20 bg-primary-dark">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Breadcrumbs */}
-                    <div className="flex items-center gap-2 text-sm text-neutral-500 mb-8">
-                        <Link href="/products" className="hover:text-primary-green transition-colors">Products</Link>
-                        <span>/</span>
-                        <span className="text-white">{product.name}</span>
-                    </div>
+  return (
+    <div className="min-h-screen pt-20">
+      {/* Breadcrumb & Hero */}
+      <section className="py-20 bg-primary-darker relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-green/5 rounded-full blur-[100px]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-2 text-sm text-neutral-500 mb-8">
+            <Link href="/" className="hover:text-primary-green transition-colors">Home</Link>
+            <span>/</span>
+            <Link href="/products" className="hover:text-primary-green transition-colors">Products</Link>
+            <span>/</span>
+            <span className="text-neutral-300">{cat.shortName}</span>
+          </nav>
 
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Image Section */}
-                        <div className="space-y-6">
-                            <div className="glass rounded-3xl p-12 aspect-[4/3] flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent border-white/10 relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-primary-green/5 blur-3xl rounded-full scale-50 group-hover:scale-100 transition-transform duration-700" />
-                                <div className="relative text-center">
-                                    <div className="w-48 h-48 rounded-full bg-primary-green/20 flex items-center justify-center mx-auto mb-6 border-2 border-primary-green/30 glow-green shadow-2xl">
-                                        <svg className="w-24 h-24 text-primary-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                        </svg>
-                                    </div>
-                                    <div className="flex items-center justify-center gap-3">
-                                        <span className="text-2xl font-mono text-white tracking-widest">{product.voltage}</span>
-                                        <span className="text-neutral-600 text-2xl font-light">|</span>
-                                        <span className="text-2xl font-mono text-primary-green tracking-widest">{product.capacity}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Key Specs Mobile/Desktop Row */}
-                            <div className="grid grid-cols-3 gap-3">
-                                {[
-                                    { label: "Cycle Life", val: product.cycleLife, icon: "🔄" },
-                                    { label: "Weight", val: product.weight, icon: "⚖️" },
-                                    { label: "Chemistry", val: product.chemistry, icon: "🧪" },
-                                ].map((s) => (
-                                    <div key={s.label} className="glass rounded-2xl p-4 text-center border-white/5">
-                                        <div className="text-xl mb-1">{s.icon}</div>
-                                        <div className="text-[10px] text-neutral-500 uppercase tracking-widest mb-1">{s.label}</div>
-                                        <div className="text-sm font-bold text-white font-mono">{s.val}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Info Section */}
-                        <div className="flex flex-col">
-                            <div className="mb-8">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <span className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-white ${product.tagColor || 'bg-primary-green'}`}>
-                                        {product.tag || 'Standard'}
-                                    </span>
-                                    <span className="text-xs text-neutral-500 font-mono tracking-widest">
-                                        MODEL: AT-{product.slug.toUpperCase().slice(0, 6)}
-                                    </span>
-                                </div>
-                                <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">
-                                    {product.name}
-                                </h1>
-                                <p className="text-lg text-neutral-400 leading-relaxed max-w-xl">
-                                    {product.description}
-                                </p>
-                            </div>
-
-                            {/* Stats / Features Grid */}
-                            <div className="grid sm:grid-cols-2 gap-4 mb-10">
-                                {product.features.map((f) => (
-                                    <div key={f} className="flex items-center gap-3 p-4 bg-white/3 border border-white/5 rounded-xl">
-                                        <div className="w-2 h-2 rounded-full bg-primary-green shadow-[0_0_8px_#00E676]" />
-                                        <span className="text-sm font-medium text-neutral-300">{f}</span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Pricing & CTA */}
-                            <div className="mt-auto p-8 glass rounded-2xl border-primary-green/10 bg-gradient-to-r from-primary-green/5 to-transparent">
-                                <div className="flex items-end gap-3 mb-6">
-                                    <div className="text-4xl font-heading font-bold text-white">
-                                        ₹{product.salePrice.toLocaleString("en-IN")}
-                                    </div>
-                                    <div className="text-lg text-neutral-500 line-through mb-1">
-                                        ₹{product.originalPrice.toLocaleString("en-IN")}
-                                    </div>
-                                    <div className="ml-auto px-3 py-1 bg-accent-amber text-primary-dark text-xs font-bold rounded">
-                                        {Math.round(((product.originalPrice - product.salePrice) / product.originalPrice) * 100)}% SAVING
-                                    </div>
-                                </div>
-
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    <button className="px-8 py-4 bg-primary-green text-primary-dark font-bold rounded-xl hover:bg-primary-green-dim transition-all shadow-xl shadow-primary-green/10 flex items-center justify-center gap-2">
-                                        <svg className="w-5 h-5 font-bold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                                        </svg>
-                                        Add to Cart
-                                    </button>
-                                    <Link
-                                        href="/contact"
-                                        className="px-8 py-4 glass text-white font-semibold rounded-xl hover:bg-white/10 transition-all text-center flex items-center justify-center gap-2"
-                                    >
-                                        Bulk Pricing Inquiry
-                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                        </svg>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div className="flex items-start gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-primary-green/10 flex items-center justify-center text-3xl shrink-0">
+              {icon}
             </div>
-        </>
-    );
+            <div>
+              <p className="text-xs text-primary-green font-mono uppercase tracking-widest mb-2">Battery Systems</p>
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">{cat.name}</h1>
+              <p className="text-xl text-neutral-400 max-w-2xl">{cat.heroTagline}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Description */}
+      <section className="py-12 bg-primary-dark border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-neutral-300 text-lg max-w-3xl leading-relaxed">{cat.description}</p>
+        </div>
+      </section>
+
+      {/* Products */}
+      <section className="py-20 bg-primary-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-8">
+            {cat.products.map((product) => (
+              <div key={product.id} className="glass rounded-2xl p-8 border border-transparent hover:border-primary-green/20 transition-all duration-300">
+                <div className="grid lg:grid-cols-3 gap-8">
+                  {/* Left: Info */}
+                  <div className="lg:col-span-2">
+                    <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+                      <div>
+                        {product.tag && (
+                          <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full ${product.tagColor || "bg-primary-green"} text-primary-dark mr-2`}>
+                            {product.tag}
+                          </span>
+                        )}
+                        <span className="text-[10px] font-mono text-neutral-500">Model: {product.model}</span>
+                      </div>
+                      {product.datasheet && (
+                        <a
+                          href={product.datasheet}
+                          className="flex items-center gap-1.5 text-xs text-primary-green border border-primary-green/30 px-3 py-1.5 rounded-lg hover:bg-primary-green/10 transition-all font-medium"
+                          download
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          Download Datasheet
+                        </a>
+                      )}
+                    </div>
+
+                    <h2 className="text-2xl font-heading font-bold text-white mb-2">{product.name}</h2>
+                    <p className="text-sm text-primary-green mb-4">{product.tagline}</p>
+                    <p className="text-sm text-neutral-400 leading-relaxed mb-6">{product.description}</p>
+
+                    {/* Quick Specs Row */}
+                    <div className="flex flex-wrap gap-3 mb-6">
+                      {[
+                        { label: "Voltage", value: product.voltage },
+                        { label: "Capacity", value: product.capacity },
+                        { label: "Chemistry", value: product.chemistry },
+                        { label: "Cycles", value: product.cycleLife },
+                        { label: "IP Rating", value: product.ipRating },
+                        { label: "Weight", value: product.weight },
+                      ].map((spec) => (
+                        <div key={spec.label} className="glass-light rounded-lg px-3 py-2 text-center min-w-24">
+                          <div className="text-[10px] text-neutral-500 uppercase tracking-wider mb-0.5">{spec.label}</div>
+                          <div className="text-sm font-semibold text-white font-mono">{spec.value}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Features */}
+                    <div className="flex flex-wrap gap-2">
+                      {product.features.map((f) => (
+                        <span key={f} className="text-xs bg-primary-green/10 text-primary-green border border-primary-green/20 px-3 py-1 rounded-full">
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right: Full Specs */}
+                  <div className="glass-light rounded-xl p-5">
+                    <h4 className="text-xs text-neutral-500 uppercase tracking-widest font-mono mb-4">Full Specifications</h4>
+                    <div className="space-y-2.5">
+                      {product.specs.map((spec) => (
+                        <div key={spec.label} className="flex justify-between gap-2 text-xs border-b border-white/5 pb-2">
+                          <span className="text-neutral-500">{spec.label}</span>
+                          <span className="text-neutral-200 font-medium text-right">{spec.value}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 space-y-2">
+                      <Link
+                        href="/contact"
+                        className="block w-full text-center py-2.5 bg-primary-green text-primary-dark text-sm font-semibold rounded-lg hover:bg-primary-green-dim transition-all"
+                      >
+                        Request Quote / Specs
+                      </Link>
+                      {product.datasheet && (
+                        <a
+                          href={product.datasheet}
+                          download
+                          className="block w-full text-center py-2.5 border border-white/15 text-neutral-300 text-sm rounded-lg hover:bg-white/5 hover:text-white transition-all"
+                        >
+                          Download Datasheet (PDF)
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Applications */}
+                {product.applications.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-white/5">
+                    <span className="text-[10px] text-neutral-500 uppercase tracking-widest mr-3">Applications:</span>
+                    {product.applications.map((app) => (
+                      <span key={app} className="text-xs text-neutral-400 mr-3">{app}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Contact CTA */}
+          <div className="mt-16 glass rounded-2xl p-8 border border-primary-green/15 text-center">
+            <h3 className="text-2xl font-heading font-bold text-white mb-2">
+              Need a custom spec for {cat.shortName}?
+            </h3>
+            <p className="text-neutral-400 mb-6 max-w-xl mx-auto">
+              Our battery engineering team can design and deliver application-specific packs. Share your voltage, capacity, interface, and environmental requirements.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-green text-primary-dark font-semibold rounded-xl hover:bg-primary-green-dim transition-all duration-300"
+            >
+              Talk to Engineering
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

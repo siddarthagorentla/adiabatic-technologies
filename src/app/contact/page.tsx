@@ -1,183 +1,256 @@
 "use client";
 import { useState } from "react";
-import type { FormEvent } from "react";
 
-const inquiryTypes = [
-    "OEM Partnership",
-    "Custom Battery Pack",
-    "Dealer Inquiry",
-    "Product Purchase",
-    "General Inquiry",
+const industries = [
+  "Material Handling / Forklift",
+  "Robotics / AMR / AGV",
+  "Defence & Security",
+  "Marine & Maritime",
+  "Power Tools",
+  "Drones & UAVs",
+  "Electric Vehicles",
+  "Consumer Electronics",
+  "BESS Residential / Commercial",
+  "BESS Grid Scale",
+  "Solar Street Lighting",
+  "Agriculture / Second Life",
+  "Other",
 ];
 
-const faqs = [
-    { q: "What is the minimum order quantity?", a: "We offer flexible MOQs starting from 10 units for standard products. Custom configurations may have different minimum requirements depending on complexity." },
-    { q: "What warranty do you provide?", a: "All our battery packs come with a 2-year warranty covering manufacturing defects. Extended warranty options are available for fleet and enterprise customers." },
-    { q: "Can you design custom battery packs?", a: "Absolutely. Our engineering team specializes in custom battery pack design. Share your voltage, capacity, form factor, and application requirements and we'll provide a proposal within 48 hours." },
-    { q: "What certifications do your batteries have?", a: "Our battery packs are AIS-156 compliant and manufactured under strict quality control at our MIDC facility. Specific certifications are available per product line." },
-    { q: "Do you support fleet monitoring?", a: "Yes, our IoT-enabled battery packs connect to our real-time cloud monitoring platform. Fleet operators can track battery health, location, and performance from anywhere." },
+const volumes = [
+  "Prototype / Sample (1–10 units)",
+  "Small Batch (10–100 units)",
+  "Series Production (100–1000 units)",
+  "Large Volume (1000+ units)",
+  "Not sure yet",
 ];
 
 export default function ContactPage() {
-    const [submitted, setSubmitted] = useState(false);
-    const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [form, setForm] = useState({
+    name: "", company: "", email: "", phone: "",
+    industry: "", volume: "", voltage: "", capacity: "",
+    message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        setSubmitted(true);
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-    return (
-        <>
-            {/* Hero */}
-            <section className="relative pt-32 pb-16 bg-grid">
-                <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-primary-green/5 rounded-full blur-[120px]" />
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <span className="text-primary-green text-sm font-medium uppercase tracking-widest">Contact</span>
-                    <h1 className="text-4xl md:text-6xl font-heading font-bold text-white mt-3 mb-6">
-                        Let&apos;s Build{" "}
-                        <span className="text-gradient">Together</span>
-                    </h1>
-                    <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
-                        Whether you need a standard battery pack or a custom solution — our team is ready
-                        to help you power your next project.
-                    </p>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    // Simulate form submit
+    await new Promise((r) => setTimeout(r, 1200));
+    setSubmitted(true);
+    setSubmitting(false);
+  };
+
+  return (
+    <div className="min-h-screen pt-20">
+      {/* Hero */}
+      <section className="py-20 bg-primary-darker relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid" />
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary-green/5 rounded-full blur-[80px]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-xs text-primary-green font-mono uppercase tracking-widest mb-3">Get in Touch</p>
+          <h1 className="text-5xl md:text-6xl font-heading font-bold text-white mb-4">Talk to Engineering</h1>
+          <p className="text-xl text-neutral-400 max-w-xl mx-auto">
+            Share your application and battery requirements. Our team responds with specifications within 24 hours.
+          </p>
+        </div>
+      </section>
+
+      <section className="py-20 bg-primary-dark">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-3 gap-12">
+            {/* Left: Contact Info */}
+            <div className="space-y-6">
+              <div className="glass rounded-2xl p-6">
+                <h3 className="font-heading font-semibold text-white mb-4">Sales & Enquiries</h3>
+                <div className="space-y-3">
+                  {[
+                    { icon: "📞", label: "+91 9521611518", href: "tel:+919521611518" },
+                    { icon: "📧", label: "darshan@adiabatic.co.in", href: "mailto:darshan@adiabatic.co.in" },
+                    { icon: "📍", label: "L-78, MIDC Ahmednagar, Maharashtra 414111", href: "#" },
+                  ].map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="flex items-start gap-3 text-sm text-neutral-300 hover:text-primary-green transition-colors"
+                    >
+                      <span className="text-base mt-0.5">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </a>
+                  ))}
                 </div>
-            </section>
+              </div>
 
-            {/* Form + Contact Info */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-5 gap-12">
-                        {/* Form */}
-                        <div className="lg:col-span-3">
-                            <div className="glass rounded-2xl p-8">
-                                {submitted ? (
-                                    <div className="text-center py-12">
-                                        <div className="w-16 h-16 rounded-full bg-primary-green/20 flex items-center justify-center mx-auto mb-4">
-                                            <svg className="w-8 h-8 text-primary-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </div>
-                                        <h3 className="text-2xl font-heading font-bold text-white mb-2">Thank You!</h3>
-                                        <p className="text-neutral-400">Our team will get in touch within 24 hours.</p>
-                                    </div>
-                                ) : (
-                                    <form onSubmit={handleSubmit} className="space-y-5">
-                                        <h3 className="text-xl font-heading font-bold text-white mb-6">Send Us an Inquiry</h3>
-                                        <div className="grid sm:grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-xs text-neutral-400 uppercase tracking-wider mb-1.5">Full Name *</label>
-                                                <input type="text" required className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-green/50 transition-colors" placeholder="John Doe" />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs text-neutral-400 uppercase tracking-wider mb-1.5">Company</label>
-                                                <input type="text" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-green/50 transition-colors" placeholder="Your Company" />
-                                            </div>
-                                        </div>
-                                        <div className="grid sm:grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-xs text-neutral-400 uppercase tracking-wider mb-1.5">Email *</label>
-                                                <input type="email" required className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-green/50 transition-colors" placeholder="john@example.com" />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs text-neutral-400 uppercase tracking-wider mb-1.5">Phone *</label>
-                                                <input type="tel" required className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-green/50 transition-colors" placeholder="+91-XXXXX-XXXXX" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs text-neutral-400 uppercase tracking-wider mb-1.5">Inquiry Type *</label>
-                                            <select required className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-green/50 transition-colors appearance-none">
-                                                <option value="" className="bg-primary-dark">Select inquiry type</option>
-                                                {inquiryTypes.map((t) => (
-                                                    <option key={t} value={t} className="bg-primary-dark">{t}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs text-neutral-400 uppercase tracking-wider mb-1.5">Message *</label>
-                                            <textarea required rows={4} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-primary-green/50 transition-colors resize-none" placeholder="Tell us about your requirements..." />
-                                        </div>
-                                        <button type="submit" className="w-full px-8 py-3.5 bg-primary-green text-primary-dark font-semibold rounded-lg hover:bg-primary-green-dim transition-all duration-300 hover:shadow-xl hover:shadow-primary-green/20">
-                                            Send Inquiry
-                                        </button>
-                                    </form>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Contact Info */}
-                        <div className="lg:col-span-2 space-y-6">
-                            <div className="glass rounded-2xl p-6">
-                                <h4 className="font-heading font-semibold text-white mb-4">Factory Address</h4>
-                                <p className="text-sm text-neutral-400 leading-relaxed">
-                                    L-78, MIDC Ahmednagar,<br />
-                                    Maharashtra 414111, India
-                                </p>
-                            </div>
-                            <div className="glass rounded-2xl p-6">
-                                <h4 className="font-heading font-semibold text-white mb-4">Registered Office</h4>
-                                <p className="text-sm text-neutral-400 leading-relaxed">
-                                    H. No. 4-67/49, Flat No 309,<br />
-                                    V.K. Residency, Shivam Homes,<br />
-                                    Sangareddy, Telangana 502285
-                                </p>
-                            </div>
-                            <div className="glass rounded-2xl p-6">
-                                <h4 className="font-heading font-semibold text-white mb-4">Get in Touch</h4>
-                                <div className="space-y-3 text-sm">
-                                    <a href="tel:+919521611518" className="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors">
-                                        <svg className="w-4 h-4 text-primary-green" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                                        +91-9521611518
-                                    </a>
-                                    <a href="mailto:darshan@adiabatic.co.in" className="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors">
-                                        <svg className="w-4 h-4 text-primary-green" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                        darshan@adiabatic.co.in
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="glass rounded-2xl overflow-hidden">
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.123!2d74.7387!3d19.0847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDA1JzA1LjAiTiA3NMKwNDQnMTkuMyJF!5e0!3m2!1sen!2sin!4v1234567890"
-                                    width="100%"
-                                    height="200"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    title="Adiabatic Technologies factory location"
-                                />
-                            </div>
-                        </div>
+              <div className="glass rounded-2xl p-6">
+                <h3 className="font-heading font-semibold text-white mb-4">Response Promise</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: "Quote Response", value: "< 24 hours" },
+                    { label: "Technical Review", value: "< 48 hours" },
+                    { label: "Sample Delivery", value: "4–6 weeks" },
+                    { label: "Series Production", value: "8–12 weeks" },
+                  ].map((item) => (
+                    <div key={item.label} className="flex justify-between text-sm">
+                      <span className="text-neutral-400">{item.label}</span>
+                      <span className="text-primary-green font-mono font-medium">{item.value}</span>
                     </div>
+                  ))}
                 </div>
-            </section>
+              </div>
 
-            {/* FAQ */}
-            <section className="py-20 bg-primary-darker">
-                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-2xl font-heading font-bold text-white text-center mb-10">Frequently Asked Questions</h2>
-                    <div className="space-y-3">
-                        {faqs.map((faq, i) => (
-                            <div key={i} className="glass rounded-xl overflow-hidden">
-                                <button
-                                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                                    className="w-full flex items-center justify-between px-6 py-4 text-left"
-                                >
-                                    <span className="text-sm font-medium text-white">{faq.q}</span>
-                                    <svg className={`w-4 h-4 text-neutral-400 transform transition-transform ${openFaq === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                {openFaq === i && (
-                                    <div className="px-6 pb-4 text-sm text-neutral-400 leading-relaxed animate-fade-in">
-                                        {faq.a}
-                                    </div>
-                                )}
-                            </div>
+              <div className="glass rounded-2xl p-6">
+                <h3 className="font-heading font-semibold text-white mb-3">Business Hours</h3>
+                <p className="text-sm text-neutral-400">Mon–Fri: 9:00 AM – 6:30 PM IST</p>
+                <p className="text-sm text-neutral-400">Sat: 10:00 AM – 2:00 PM IST</p>
+                <p className="text-sm text-neutral-500 mt-2">For urgent requirements, call directly.</p>
+              </div>
+            </div>
+
+            {/* Right: Form */}
+            <div className="lg:col-span-2">
+              {submitted ? (
+                <div className="glass rounded-2xl p-12 text-center border border-primary-green/20">
+                  <div className="text-5xl mb-4">✅</div>
+                  <h3 className="text-2xl font-heading font-bold text-white mb-2">Request Received!</h3>
+                  <p className="text-neutral-400">
+                    Thank you, <span className="text-white">{form.name}</span>. Our engineering team will review your requirements and respond within 24 hours at <span className="text-primary-green">{form.email}</span>.
+                  </p>
+                </div>
+              ) : (
+                <div className="glass rounded-2xl p-8 border border-white/8">
+                  <h3 className="text-xl font-heading font-semibold text-white mb-6">Request Battery Specifications</h3>
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Name & Company */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="name" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Full Name *</label>
+                        <input
+                          id="name" name="name" type="text" required
+                          value={form.name} onChange={handleChange}
+                          placeholder="Raj Mehta"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="company" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Company *</label>
+                        <input
+                          id="company" name="company" type="text" required
+                          value={form.company} onChange={handleChange}
+                          placeholder="Acme Robotics Pvt. Ltd."
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email & Phone */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="email" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Email Address *</label>
+                        <input
+                          id="email" name="email" type="email" required
+                          value={form.email} onChange={handleChange}
+                          placeholder="raj@acme.com"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Phone Number *</label>
+                        <input
+                          id="phone" name="phone" type="tel" required
+                          value={form.phone} onChange={handleChange}
+                          placeholder="+91 98765 43210"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Industry */}
+                    <div>
+                      <label htmlFor="industry" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Application / Industry *</label>
+                      <select
+                        id="industry" name="industry" required
+                        value={form.industry} onChange={handleChange}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                      >
+                        <option value="" className="bg-primary-dark">Select industry...</option>
+                        {industries.map((ind) => (
+                          <option key={ind} value={ind} className="bg-primary-dark">{ind}</option>
                         ))}
+                      </select>
                     </div>
+
+                    {/* Volume */}
+                    <div>
+                      <label htmlFor="volume" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Expected Volume</label>
+                      <select
+                        id="volume" name="volume"
+                        value={form.volume} onChange={handleChange}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                      >
+                        <option value="" className="bg-primary-dark">Select volume...</option>
+                        {volumes.map((v) => (
+                          <option key={v} value={v} className="bg-primary-dark">{v}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Voltage & Capacity */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="voltage" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Required Voltage (if known)</label>
+                        <input
+                          id="voltage" name="voltage" type="text"
+                          value={form.voltage} onChange={handleChange}
+                          placeholder="e.g. 48V, 24V"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="capacity" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Required Capacity (if known)</label>
+                        <input
+                          id="capacity" name="capacity" type="text"
+                          value={form.capacity} onChange={handleChange}
+                          placeholder="e.g. 100Ah, 50kWh"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Message */}
+                    <div>
+                      <label htmlFor="message" className="block text-xs text-neutral-400 uppercase tracking-wider mb-2">Application Details & Requirements</label>
+                      <textarea
+                        id="message" name="message" rows={5}
+                        value={form.message} onChange={handleChange}
+                        placeholder="Describe your application, operating conditions, interface requirements, form-factor constraints, timeline, and any other relevant details..."
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-primary-green/50 focus:ring-1 focus:ring-primary-green/20 transition-all resize-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full py-4 bg-primary-green text-primary-dark font-semibold rounded-xl hover:bg-primary-green-dim transition-all duration-300 hover:shadow-xl hover:shadow-primary-green/25 disabled:opacity-60 disabled:cursor-not-allowed text-base"
+                    >
+                      {submitting ? "Sending..." : "Submit Request"}
+                    </button>
+
+                    <p className="text-xs text-neutral-500 text-center">
+                      By submitting you agree to be contacted by Adiabatic Technologies regarding your enquiry.
+                    </p>
+                  </form>
                 </div>
-            </section>
-        </>
-    );
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }
